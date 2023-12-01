@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="styles.css" />
+    <title>Meme Maker</title>
+  </head>
+  <body>
+    <canvas></canvas>
+    <!-- [ Range Input ] 
+         - min : 최소값
+         - max : 최대값
+         - value : 초기값 및 현재값
+         - step : unit
+    -->
+    <div id="canvas-control">
+      <input
+        type="range"
+        id="line-width"
+        min="1"
+        max="10"
+        value="5"
+        step="0.5"
+      />
+      <div class="canvas-control__color">
+        <input type="color" id="line-color" />
+        <div id="background-color">
+          <!--  [ Custom data into HTML ] 
+                - data-{name} : HTML에 custom data를 정의할 수 있음
+                - JavaScript에서 `dataset`을 통해 접근
+            -->
+          <div
+            class="color-option"
+            style="background-color: #f6e58d"
+            data-color="#f6e58d"
+          ></div>
+          <div
+            class="color-option"
+            style="background-color: #ffbe76"
+            data-color="#ffbe76"
+          ></div>
+          <div
+            class="color-option"
+            style="background-color: #ff7979"
+            data-color="#ff7979"
+          ></div>
+          <div
+            class="color-option"
+            style="background-color: #badc58"
+            data-color="#badc58"
+          ></div>
+          <div
+            class="color-option"
+            style="background-color: #dff9fb"
+            data-color="#dff9fb"
+          ></div>
+          <div
+            class="color-option"
+            style="background-color: #f9ca24"
+            data-color="#f9ca24"
+          ></div>
+          <div
+            class="color-option"
+            style="background-color: #f0932b"
+            data-color="#f0932b"
+          ></div>
+          <div
+            class="color-option"
+            style="background-color: #eb4d4b"
+            data-color="#eb4d4b"
+          ></div>
+          <div
+            class="color-option"
+            style="background-color: #6ab04c"
+            data-color="#6ab04c"
+          ></div>
+          <div
+            class="color-option"
+            style="background-color: #c7ecee"
+            data-color="#c7ecee"
+          ></div>
+        </div>
+      </div>
+      <button id="mode-btn">Fill</button>
+      <button id="destroy-btn">Destroy</button>
+      <button id="eraser-btn">Erase</button>
+    </div>
+    <script src="app.js"></script>
+  </body>
+</html>
