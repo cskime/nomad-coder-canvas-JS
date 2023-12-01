@@ -16,6 +16,7 @@ canvas.width = CANVAS_WIDTH;
 canvas.height = CANVAS_HEIGHT;
 
 const context = canvas.getContext("2d");
+context.lineCap = "round";
 
 /*  [ Coordinate System ]
     - origin : top-left
@@ -204,4 +205,75 @@ const eraserBtn = document.getElementById("eraser-btn");
 eraserBtn.addEventListener("click", () => {
   changeColors("white");
   changeFillMode();
+});
+
+/*  [ Load image file to Browser ]
+    - 브라우저는 사용자의 file system과 격리되어 있으므로 직접 문서들을 읽을 수 없음 -> sandbox
+    - 사용자가 input을 통해 직접 선택한 파일들만 브라우저의 메모리에 로드할 수 있음
+    - 로드된 메모리의 URL을 통해 이미지에 접근
+    - 이 URL은 인터넷상에 존재하지 않음. 브라우저가 메모리에 있는 파일을 나타내는 형식.
+*/
+const fileInput = document.getElementById("file");
+fileInput.addEventListener("change", (event) => {
+  const file = event.target.files[0];
+  const url = URL.createObjectURL(file);
+
+  /* [ JavaScript로 Image 추가하기 ] 
+     - new Image() == <img src="" />
+     - `src`로 image path 설정 -> 여기서는 브라우저가 메모리에 로드한 URL
+     - `onLoad` : URL에 있는 image가 로드되었을 때 event
+     - `drawImage(image, dx, dy, dw, dh)` : Cavnas API에서 제공하는 image 추가 함수
+        - image : Image object
+        - dx, dy : Canvas에서의 location
+        - dw, dh : Canvas에서의 size
+  */
+  const image = new Image();
+  image.src = url;
+  image.onload = () => {
+    context.drawImage(image, 0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+    fileInput.value = null; // 선택된 file 지우기
+  };
+});
+
+/*  [ Add text to canvas ]
+    - `dblclick` : 더블클릭 event
+    - `context.strokeText(text,x,y)` : (x, y) location에 text 그려넣기 (테두리만))
+    - `context.fillText(text,x,y)` : (x, y) location에 text 그려넣기 (색이 채워짐)
+    - `context.font` : 폰트 지정 (e.g. "48px serif")
+
+    [ Context 상태 저장하기 ]
+    - `lineWidth`가 5일 때 `strokeText`를 호출하면 글자들이 두껍게 그려질 것
+    - `lineWidth`를 1로 설정하면 brush 두께도 같이 줄어드는 문제가 있음
+    - Text를 그릴 때만 `lineWidth`를 1로 설정하고, 이후 원래 값으로 복귀시켜야 함
+    - 즉, 이전 상태를 저장하고 변경 후 저장한 상태를 다시 되돌릴 필요가 있다.
+    - `context.save()` : Context의 현재 state 저장 (color, style 등)
+    - `context.restore()` : 저장해 두었던 context state를 되돌림
+ */
+const textInput = document.getElementById("text");
+canvas.addEventListener("dblclick", (event) => {
+  const text = textInput.value;
+
+  if (text !== "") {
+    context.save();
+    context.lineWidth = 1;
+    context.font = "48px serif";
+    context.fillText(text, event.offsetX, event.offsetY);
+    context.restore();
+  }
+});
+
+/*  [ Save the contents in canvas into image ] 
+    - `toDataURL()` : Canvas에 있는 모든 data들을 base64 encoding된 image URL로 추출
+    - <a> tag 이용
+        - href : Canvas에서 추출한 image url로 이동
+        - download : 링크를 누를 때 download를 동작사킴. 다운로드되는 이미지 이름 설정
+        - `click()` : JavaScript에서 click event를 발생시킴
+*/
+const saveBtn = document.getElementById("save");
+saveBtn.addEventListener("click", (event) => {
+  const url = canvas.toDataURL();
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "myDrawing.png";
+  a.click();
 });

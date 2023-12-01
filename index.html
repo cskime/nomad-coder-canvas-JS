@@ -85,6 +85,16 @@
       <button id="mode-btn">Fill</button>
       <button id="destroy-btn">Destroy</button>
       <button id="eraser-btn">Erase</button>
+      <!--  [ File input ]
+            - accept : 선택할 수 있는 파일 제한
+                - `image/*` : 모든 image를 허용하고, 나머지 파일은 선택하지 못함
+            - multiple : 파일을 여러 개 업로드 할 수 있음
+                - JavaScript에서 `change` event에 대해 listener를 추가할 때,
+                  `files` array를 통해 메모리에 로드된 file object에 접근할 수 있음
+        -->
+      <input type="file" accept="image/*" id="file" />
+      <input type="text" placeholder="Write and then double click" id="text" />
+      <button id="save">Save image</button>
     </div>
     <script src="app.js"></script>
   </body>
