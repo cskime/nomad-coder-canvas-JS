@@ -1,0 +1,49 @@
+@import "reset.css";
+
+body {
+  margin: 8px;
+  display: flex;
+  justify-content: center;
+}
+
+#container {
+  width: 1000px;
+  height: 800px;
+  position: relative;
+}
+.container-cursor--hidden {
+  cursor: none;
+}
+
+canvas {
+  width: inherit;
+  height: inherit;
+  border: 4px solid black;
+  border-radius: 16px;
+}
+
+/* Brush */
+
+#brush {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: black;
+  position: absolute;
+  pointer-events: none;
+}
+.brush--hidden {
+  display: none;
+}
+
+/* Control */
+
+#control {
+  width: 200px;
+  height: 200px;
+  background-color: tomato;
+  position: absolute;
+}
+.control--hidden {
+  display: none;
+}
