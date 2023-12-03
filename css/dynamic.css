@@ -1,0 +1,12 @@
+.control--hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.brush--hidden {
+  display: none;
+}
+
+.cursor--hidden {
+  cursor: none;
+}

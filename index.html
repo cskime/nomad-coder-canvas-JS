@@ -7,10 +7,109 @@
     <title>Mind Drawing</title>
   </head>
   <body>
-    <div id="container" class="container-cursor--hidden">
-      <canvas></canvas>
-      <div id="brush" class="brush--hidden"></div>
-      <div id="control" class="control--hidden"></div>
+    <div id="container">
+      <div id="draw">
+        <canvas></canvas>
+        <div id="brush" class="brush--hidden"></div>
+      </div>
+      <div id="control" class="control--hidden">
+        <input
+          type="range"
+          min="2"
+          max="40"
+          value="10"
+          step="2"
+          id="control__thickness"
+        />
+
+        <div class="divider"></div>
+
+        <div id="control__palette">
+          <input type="color" id="color" />
+          <div>
+            <div
+              class="color-option"
+              style="background-color: #f6e58d"
+              data-color="#f6e58d"
+            ></div>
+            <div
+              class="color-option"
+              style="background-color: #ffbe76"
+              data-color="#ffbe76"
+            ></div>
+            <div
+              class="color-option"
+              style="background-color: #ff7979"
+              data-color="#ff7979"
+            ></div>
+            <div
+              class="color-option"
+              style="background-color: #e056fd"
+              data-color="#f9ca24"
+            ></div>
+            <div
+              class="color-option"
+              style="background-color: #f0932b"
+              data-color="#f0932b"
+            ></div>
+          </div>
+          <div>
+            <div
+              class="color-option"
+              style="background-color: #eb4d4b"
+              data-color="#eb4d4b"
+            ></div>
+            <div
+              class="color-option"
+              style="background-color: #7ed6df"
+              data-color="#7ed6df"
+            ></div>
+            <div
+              class="color-option"
+              style="background-color: #e056fd"
+              data-color="#e056fd"
+            ></div>
+            <div
+              class="color-option"
+              style="background-color: #686de0"
+              data-color="#686de0"
+            ></div>
+            <div
+              class="color-option"
+              style="background-color: #22a6b3"
+              data-color="#22a6b3"
+            ></div>
+          </div>
+        </div>
+
+        <div id="control__eraser">
+          <button class="control-input control-input__btn">Erase</button>
+          <button class="control-input control-input__btn">Erase All</button>
+        </div>
+
+        <div class="divider"></div>
+
+        <div id="control__text">
+          <input
+            type="text"
+            placeholder="Type text"
+            class="control-input control-input__input"
+          />
+        </div>
+
+        <div id="control__image">
+          <label for="image-input" class="control-input control-input__btn">
+            Import Image
+            <input type="file" accept="image/*" id="image-input" />
+          </label>
+        </div>
+
+        <div class="divider"></div>
+
+        <div id="control__function">
+          <button class="control-input control-input__btn">Save</button>
+        </div>
+      </div>
     </div>
     <script src="index.js"></script>
   </body>

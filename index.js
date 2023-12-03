@@ -1,10 +1,22 @@
 /* Elements */
 
 const container = document.getElementById("container");
-const brush = document.getElementById("brush");
-const control = document.getElementById("control");
 
-const CANVAS_WIDTH = 1000;
+const brush = document.getElementById("brush");
+
+const control = document.getElementById("control");
+const thickness = document.getElementById("control__thickness");
+const color = document.getElementById("color");
+const colorOption = document.querySelectorAll(
+  "#control__palette .color-option"
+);
+const erase = document.querySelector("#control__eraser button:first-child");
+const eraseAll = document.querySelector("#control__eraser button:last-child");
+const textInput = document.querySelector("#control__text input");
+const image = document.getElementById("image-input");
+const save = document.querySelector("#control__function button:first-child");
+
+const CANVAS_WIDTH = 800;
 const CANVAS_HEIGHT = 800;
 const canvas = document.querySelector("canvas");
 canvas.width = CANVAS_WIDTH;
@@ -18,15 +30,23 @@ context.strokeStyle = COLOR_DEFAULT;
 context.fillStyle = COLOR_DEFAULT;
 context.lineCap = "round";
 
+/* Constant */
+
+const CURSOR_HIDDEN_CLASSNAME = "cursor--hidden";
+const BRUSH_HIDDEN_CLASSNAME = "brush--hidden";
+const CONTROL_HIDDEN_CLASSNAME = "control--hidden";
+
 /* State */
 
-let isPaintMode = false;
-let isControlShown = false;
+let isPainting = false;
+
+function setPainting(painting) {
+  isPainting = painting;
+}
 
 /* Cursor */
 
 function setCursorHidden(hidden) {
-  const CURSOR_HIDDEN_CLASSNAME = "container-cursor--hidden";
   if (hidden) {
     container.classList.add(CURSOR_HIDDEN_CLASSNAME);
   } else {
@@ -37,9 +57,7 @@ function setCursorHidden(hidden) {
 /* Brush */
 
 function setBrushHidden(hidden) {
-  const BRUSH_HIDDEN_CLASSNAME = "brush--hidden";
-
-  if (isControlShown || hidden) {
+  if (hidden) {
     brush.classList.add(BRUSH_HIDDEN_CLASSNAME);
   } else {
     brush.classList.remove(BRUSH_HIDDEN_CLASSNAME);
@@ -47,74 +65,72 @@ function setBrushHidden(hidden) {
 }
 
 function moveBrush(x, y) {
-  brush.style.left = x + "px";
   brush.style.top = y + "px";
+  brush.style.left = x + "px";
+}
+
+function changeBrushColor(brushColor) {
+  if (brushColor === "white") {
+    brushColor = "#ffffff";
+    brush.style.border = "1px solid black";
+  } else {
+    brush.style.border = "none";
+  }
+
+  brush.style.backgroundColor = brushColor;
+  color.value = brushColor;
+  context.strokeStyle = brushColor;
+  context.fillStyle = brushColor;
 }
 
 /* Control */
 
-const CURSOR_HIDDEN_CLASSNAME = "control--hidden";
-
 function showControl(x, y) {
-  control.classList.remove(CURSOR_HIDDEN_CLASSNAME);
-  control.style.left = x + 10 + "px";
+  control.classList.remove(CONTROL_HIDDEN_CLASSNAME);
   control.style.top = y + "px";
-  isControlShown = true;
-  setCursorHidden(false);
+  control.style.left = x + "px";
 }
 
 function hideControl() {
-  control.classList.add(CURSOR_HIDDEN_CLASSNAME);
-  isControlShown = false;
-  setCursorHidden(true);
+  control.classList.add(CONTROL_HIDDEN_CLASSNAME);
 }
 
-/* Painting */
+/* Draw Text */
 
-function setPaintMode(paintMode) {
-  isPaintMode = isControlShown ? false : paintMode;
+function drawText(x, y) {
+  const text = textInput.value;
+
+  if (text !== "") {
+    context.save();
+    context.lineWidth = 1;
+    context.font = "48px serif";
+    context.fillText(text, x, y);
+    context.restore();
+  }
 }
 
 /* Event Listener */
 
-container.addEventListener("mouseenter", () => {
+canvas.addEventListener("mouseenter", () => {
+  setCursorHidden(true);
   setBrushHidden(false);
-});
-container.addEventListener("mouseleave", () => {
-  setBrushHidden(true);
-});
-container.addEventListener("mousemove", (event) => {
-  moveBrush(event.offsetX, event.offsetY);
-});
-container.addEventListener("contextmenu", (event) => {
-  if (isControlShown) {
-    return;
-  }
-  event.preventDefault();
-  showControl(event.offsetX, event.offsetY);
-  setPaintMode(false);
-  setBrushHidden(true);
-});
-container.addEventListener("click", () => {
-  hideControl();
-  setBrushHidden(false);
-});
-
-canvas.addEventListener("mousedown", () => {
-  setPaintMode(true);
-});
-canvas.addEventListener("mouseup", () => {
-  setPaintMode(false);
 });
 canvas.addEventListener("mouseleave", () => {
-  setPaintMode(false);
+  setCursorHidden(false);
+  setBrushHidden(true);
+  setPainting(false);
+});
+canvas.addEventListener("mousedown", (event) => {
+  setPainting(true);
+  hideControl();
+});
+canvas.addEventListener("mouseup", () => {
+  setPainting(false);
 });
 canvas.addEventListener("mousemove", (event) => {
-  if (isControlShown) {
-    return;
-  }
+  moveBrush(event.offsetX, event.offsetY);
 
-  if (isPaintMode) {
+  if (isPainting) {
     context.lineTo(event.offsetX, event.offsetY);
     context.stroke();
     return;
@@ -122,4 +138,62 @@ canvas.addEventListener("mousemove", (event) => {
 
   context.beginPath();
   context.moveTo(event.offsetX, event.offsetY);
+});
+canvas.addEventListener("contextmenu", (event) => {
+  event.preventDefault();
+  setPainting(false);
+  showControl(event.offsetX, event.offsetY);
+});
+canvas.addEventListener("dblclick", (event) => {
+  drawText(event.offsetX, event.offsetY);
+});
+
+thickness.addEventListener("change", (event) => {
+  const value = event.target.value;
+  brush.style.width = value + "px";
+  brush.style.height = value + "px";
+  context.lineWidth = parseInt(value);
+});
+color.addEventListener("change", (event) => {
+  changeBrushColor(event.target.value);
+});
+colorOption.forEach((option) => {
+  option.addEventListener("click", (event) => {
+    changeBrushColor(event.target.dataset.color);
+  });
+});
+erase.addEventListener("click", () => {
+  changeBrushColor("white");
+});
+eraseAll.addEventListener("click", () => {
+  const result = confirm("Do you want to erase all drawings?");
+  if (result) {
+    context.save();
+    context.fillStyle = "white";
+    context.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+    context.restore();
+    hideControl();
+  }
+});
+image.addEventListener("click", (event) => {
+  hideControl();
+});
+image.addEventListener("change", (event) => {
+  const file = event.target.files[0];
+  const url = URL.createObjectURL(file);
+
+  const image = new Image();
+  image.src = url;
+  image.onload = () => {
+    context.drawImage(image, 0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+    image.value = null; // 선택된 file 지우기
+  };
+});
+save.addEventListener("click", (event) => {
+  const url = canvas.toDataURL();
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "myDrawing.png";
+  a.click();
+  hideControl();
 });

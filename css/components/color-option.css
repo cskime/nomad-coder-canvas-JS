@@ -1,0 +1,11 @@
+.color-option {
+  width: 40px;
+  height: 40px;
+  background-color: white;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: opacity ease-in-out 0.25s;
+}
+.color-option:hover {
+  opacity: 0.6;
+}
