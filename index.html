@@ -10,17 +10,13 @@
     <div id="container">
       <div id="draw">
         <canvas></canvas>
-        <div id="brush" class="brush--hidden"></div>
+        <div id="brush" class="brush-indicator brush--hidden"></div>
       </div>
       <div id="control" class="control--hidden">
-        <input
-          type="range"
-          min="2"
-          max="40"
-          value="10"
-          step="2"
-          id="control__thickness"
-        />
+        <div id="control__thickness">
+          <div id="thickness-preview"><div class="brush-indicator"></div></div>
+          <input type="range" min="2" max="40" value="10" step="2" />
+        </div>
 
         <div class="divider"></div>
 

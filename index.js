@@ -5,7 +5,10 @@ const container = document.getElementById("container");
 const brush = document.getElementById("brush");
 
 const control = document.getElementById("control");
-const thickness = document.getElementById("control__thickness");
+const thicknessIndicator = document.querySelector(
+  "#thickness-preview .brush-indicator"
+);
+const thicknessInput = document.querySelector("#control__thickness input");
 const color = document.getElementById("color");
 const colorOption = document.querySelectorAll(
   "#control__palette .color-option"
@@ -78,9 +81,19 @@ function changeBrushColor(brushColor) {
   }
 
   brush.style.backgroundColor = brushColor;
+  thicknessIndicator.style.backgroundColor = brushColor;
   color.value = brushColor;
   context.strokeStyle = brushColor;
   context.fillStyle = brushColor;
+}
+
+function changeBrushSize(value) {
+  const size = value + "px";
+  brush.style.width = size;
+  brush.style.height = size;
+  thicknessIndicator.style.width = size;
+  thicknessIndicator.style.height = size;
+  context.lineWidth = parseInt(value);
 }
 
 /* Control */
@@ -148,11 +161,9 @@ canvas.addEventListener("dblclick", (event) => {
   drawText(event.offsetX, event.offsetY);
 });
 
-thickness.addEventListener("change", (event) => {
+thicknessInput.addEventListener("change", (event) => {
   const value = event.target.value;
-  brush.style.width = value + "px";
-  brush.style.height = value + "px";
-  context.lineWidth = parseInt(value);
+  changeBrushSize(value);
 });
 color.addEventListener("change", (event) => {
   changeBrushColor(event.target.value);
