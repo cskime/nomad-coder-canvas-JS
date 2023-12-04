@@ -91,7 +91,28 @@
             placeholder="Type text"
             class="control-input control-input__input"
           />
+          <label>
+            Font size
+            <input
+              type="range"
+              id="font-size"
+              min="20"
+              max="48"
+              step="2"
+              value="30"
+            />
+          </label>
+          <label>
+            Font family
+            <select name="Serif" id="font-family">
+              <option value="serif">Serif</option>
+              <option value="sans-serif">Sans Serif</option>
+              <option value="system-ui">System</option>
+            </select>
+          </label>
         </div>
+
+        <div class="divider"></div>
 
         <div id="control__image">
           <label for="image-input" class="control-input control-input__btn">
@@ -99,8 +120,6 @@
             <input type="file" accept="image/*" id="image-input" />
           </label>
         </div>
-
-        <div class="divider"></div>
 
         <div id="control__function">
           <button class="control-input control-input__btn">Save</button>

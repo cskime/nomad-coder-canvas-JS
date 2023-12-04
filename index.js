@@ -1,22 +1,27 @@
 /* Elements */
 
 const container = document.getElementById("container");
-
 const brush = document.getElementById("brush");
-
 const control = document.getElementById("control");
+
 const thicknessIndicator = document.querySelector(
   "#thickness-preview .brush-indicator"
 );
 const thicknessInput = document.querySelector("#control__thickness input");
+
 const color = document.getElementById("color");
 const colorOption = document.querySelectorAll(
   "#control__palette .color-option"
 );
 const erase = document.querySelector("#control__eraser button:first-child");
 const eraseAll = document.querySelector("#control__eraser button:last-child");
+
 const textInput = document.querySelector("#control__text input");
+const fontSizeInput = document.getElementById("font-size");
+const fontFamilySelect = document.getElementById("font-family");
+
 const image = document.getElementById("image-input");
+
 const save = document.querySelector("#control__function button:first-child");
 
 const CANVAS_WIDTH = 800;
@@ -42,10 +47,12 @@ const CONTROL_HIDDEN_CLASSNAME = "control--hidden";
 /* State */
 
 let isPainting = false;
-
 function setPainting(painting) {
   isPainting = painting;
 }
+
+let fontSize = 30;
+let fontFamily = "serif";
 
 /* Cursor */
 
@@ -116,7 +123,7 @@ function drawText(x, y) {
   if (text !== "") {
     context.save();
     context.lineWidth = 1;
-    context.font = "48px serif";
+    context.font = `${fontSize}px ${fontFamily}`;
     context.fillText(text, x, y);
     context.restore();
   }
@@ -173,6 +180,14 @@ colorOption.forEach((option) => {
     changeBrushColor(event.target.dataset.color);
   });
 });
+
+fontSizeInput.addEventListener("change", (event) => {
+  fontSize = event.target.value;
+});
+fontFamilySelect.addEventListener("change", (event) => {
+  fontFamily = event.target.value;
+});
+
 erase.addEventListener("click", () => {
   changeBrushColor("white");
 });
