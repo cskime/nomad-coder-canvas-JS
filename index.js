@@ -10,6 +10,8 @@ const thicknessIndicator = document.querySelector(
 const thicknessInput = document.querySelector("#control__thickness input");
 
 const color = document.getElementById("color");
+const drawTool = document.getElementById("draw-tool");
+
 const colorOption = document.querySelectorAll(
   "#control__palette .color-option"
 );
@@ -47,9 +49,7 @@ const CONTROL_HIDDEN_CLASSNAME = "control--hidden";
 /* State */
 
 let isPainting = false;
-function setPainting(painting) {
-  isPainting = painting;
-}
+let isPenTool = true;
 
 let fontSize = 30;
 let fontFamily = "serif";
@@ -138,19 +138,22 @@ canvas.addEventListener("mouseenter", () => {
 canvas.addEventListener("mouseleave", () => {
   setCursorHidden(false);
   setBrushHidden(true);
-  setPainting(false);
+  isPainting = false;
 });
 canvas.addEventListener("mousedown", (event) => {
-  setPainting(true);
-  hideControl();
+  isPainting = true;
+
+  if (isPenTool) {
+    hideControl();
+  }
 });
 canvas.addEventListener("mouseup", () => {
-  setPainting(false);
+  isPainting = false;
 });
 canvas.addEventListener("mousemove", (event) => {
   moveBrush(event.offsetX, event.offsetY);
 
-  if (isPainting) {
+  if (isPainting && isPenTool) {
     context.lineTo(event.offsetX, event.offsetY);
     context.stroke();
     return;
@@ -161,8 +164,15 @@ canvas.addEventListener("mousemove", (event) => {
 });
 canvas.addEventListener("contextmenu", (event) => {
   event.preventDefault();
-  setPainting(false);
+  isPainting = false;
   showControl(event.offsetX, event.offsetY);
+});
+canvas.addEventListener("click", () => {
+  if (isPenTool) {
+    return;
+  }
+
+  context.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 });
 canvas.addEventListener("dblclick", (event) => {
   drawText(event.offsetX, event.offsetY);
@@ -172,9 +182,14 @@ thicknessInput.addEventListener("change", (event) => {
   const value = event.target.value;
   changeBrushSize(value);
 });
+
 color.addEventListener("change", (event) => {
   changeBrushColor(event.target.value);
 });
+drawTool.addEventListener("change", (event) => {
+  isPenTool = event.target.value === "pen";
+});
+
 colorOption.forEach((option) => {
   option.addEventListener("click", (event) => {
     changeBrushColor(event.target.dataset.color);
